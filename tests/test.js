@@ -2,7 +2,8 @@ let expect = require('chai').expect
 let MarkovGen = require('../index.js')
 
 describe('Markov Chain Generator', () => {
-  let testInput = ['Test sentence number 1', 'This is another test sentence', 'I\'m test sentence number two!', 'I can\'t believe that this is another test', 'TEST of insensitive']
+  let testInput = ['Test sentence number 1', 'This is another test sentence', 'I\'m test sentence number two!', 'I can\'t believe that this is another test', 'TEST of insensitive'];
+  let presavedOptions = {};
 
   it('throws with no input', () => {
     let fn = () => {
@@ -52,5 +53,19 @@ describe('Markov Chain Generator', () => {
       minLength: 2
     }).makeChain()
     expect(string).to.not.equal(string.toLowerCase())
+  })
+
+  it('returns a serialized string', () => {
+    let testInput = ['Test seNtence', 'anothEr teSt sentenCe', 'A thIRd tEST seNtence']
+    presavedOptions = new MarkovGen({
+      input: testInput,
+      minLength: 2
+    }).serialize()
+    expect(typeof presavedOptions).to.equal('string')
+  })
+
+  it('restores chain from presaved options', () => {
+    let string = new MarkovGen(JSON.parse(presavedOptions)).makeChain()
+    expect(string).to.not.equal('')  
   })
 })

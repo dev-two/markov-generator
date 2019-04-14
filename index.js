@@ -6,12 +6,14 @@ class Markov {
    */
   constructor (props) {
     this.props = props
-    if (!this.props.input) {
-      throw new Error('input was empty!')
+    if (!this.props.input && !this.props.wordStats && !this.props.terminals && !this.props.startWords && !this.props.wordStats) {
+      throw new Error('input or table was empty!')
     }
-    this.terminals = {}
-    this.startWords = []
-    this.wordStats = {}
+    this.terminals = this.props.terminals || {}
+    this.startWords = this.props.startWords || []
+    this.wordStats = this.props.wordStats || {}
+
+    if(this.props.terminals && this.props.startWords && this.props.wordStats) return;
 
     this.props.input.forEach((e, i, a) => {
       let words = e.split(' ')
@@ -76,6 +78,19 @@ class Markov {
   }
 
   /**
+   * Serializes props with ready chain to JSON.
+   * @returns {string} – Serialized props.
+   */
+  serialize () {
+    return JSON.stringify({
+      minLength: this.props.minLength,
+      wordStats: this.wordStats,
+      terminals: this.terminals,
+      startWords: this.startWords
+    })
+  }
+
+  /**
    * Creates a new string via a Markov chain based on the input array from the constructor
    * @param {number} minLength - The minimum number of words in the generated string
    * @return {string} The generated string
@@ -91,9 +106,6 @@ class Markov {
       if (chain.length > minLength && this.terminals.hasOwnProperty(word)) {
         break
       }
-    }
-    if (this.props.input.includes(chain.join(' '))) {
-      return this.makeChain(minLength)
     }
     if (chain.length < minLength) {
       return this.makeChain(minLength)
