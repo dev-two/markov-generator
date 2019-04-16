@@ -123,7 +123,7 @@ class Markov {
             }
         }
         if (chain.length < minLength) {
-            return this.makeChain(minLength);
+            return this.makeChain(minLength, wordPassed);
         }
         return chain.join(' ');
     }
